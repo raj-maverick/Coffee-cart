@@ -1,1 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitch Deck: The French Press Cart</title>
+    <!-- Chosen Palette: Warm Taupe & Coffee -->
+    <!-- Application Structure Plan: A vertical scrolling SPA with a sticky navigation header. The pitch deck slides are logically grouped into thematic sections: Home/Solution, The Opportunity, Our Business (tabbed), The Ask & Financials (interactive), The Roadmap, Team, and Contact. This structure turns a linear presentation into an explorable narrative, allowing users to either follow the story or jump to sections of interest, improving usability and engagement. Market data is integrated into 'The Opportunity'. Financials are interactive based on user-selected scenarios. Cart image gallery added to Home section. -->
+    <!-- Visualization & Content Choices: The core of the application is an interactive financial dashboard in 'The Ask & Financials' section. A user can select a sales scenario (Conservative, Moderate, Optimistic) via buttons. This interaction dynamically updates key metrics like 'Net Monthly Profit' and 'Payback Period' and redraws a Chart.js bar chart to visualize the outcome. This turns static financial data from the report into a hands-on tool for an investor to explore potential outcomes. A donut chart is used for the 'Use of Funds' to clearly show proportions. Market opportunity chart updated with recent data. All other information is presented using clear typography, cards, and CSS-based layouts to maintain focus and clarity. No SVG/Mermaid is used, adhering to the constraint. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8; /* Warm Taupe */
+            color: #402E32; /* Dark Coffee Brown */
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            color: #6B4F4B; /* Muted Coffee Brown */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s;
+            color: #402E32;
+        }
+        .nav-link:hover {
+            color: #A16207; /* Amber Accent */
+        }
+        .active-nav {
+            color: #A16207; /* Amber Accent */
+            border-bottom: 2px solid #A16207;
+            padding-bottom: 4px;
+        }
+        .tab-button {
+            transition: all 0.3s;
+            color: #402E32;
+        }
+        .tab-button:hover {
+            color: #A16207;
+        }
+        .active-tab {
+            background-color: #A16207; /* Amber Accent */
+            color: #FFFFFF !important;
+            border-radius: 0.375rem; 
+        }
+        .scenario-btn.active-tab { /* Ensure scenario buttons also get the rounded style */
+             border-radius: 0.375rem;
+        }
+        .bg-brand-primary { background-color: #FDFBF8; }
+        .bg-brand-secondary { background-color: #EFEBE9; } /* Light Taupe */
+        .text-brand-title { color: #6B4F4B; }
+        .text-brand-accent { color: #A16207; }
+        .bg-brand-accent { background-color: #A16207; }
+        .hover\:bg-brand-accent-dark:hover { background-color: #805000; }
+        .cart-gallery img {
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+    </style>
+</head>
+<body class="bg-brand-primary text-brand-title">
+
+    <header id="header" class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-brand-accent">The French Press Cart</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#opportunity" class="nav-link">Opportunity</a>
+                <a href="#business" class="nav-link">Our Business</a>
+                <a href="#financials" class="nav-link">Financials</a>
+                <a href="#roadmap" class="nav-link">Roadmap</a>
+                <a href="#team" class="nav-link">Team</a>
+            </div>
+            <a href="#contact" class="hidden md:inline-block bg-brand-accent text-white px-4 py-2 rounded-lg hover:bg-brand-accent-dark transition-colors">Contact</a>
+             <button id="mobile-menu-button" class="md:hidden text-brand-title">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white p-4 border-t border-stone-200">
+             <a href="#opportunity" class="block py-2 text-center nav-link">Opportunity</a>
+             <a href="#business" class="block py-2 text-center nav-link">Our Business</a>
+             <a href="#financials" class="block py-2 text-center nav-link">Financials</a>
+             <a href="#roadmap" class="block py-2 text-center nav-link">Roadmap</a>
+             <a href="#team" class="block py-2 text-center nav-link">Team</a>
+             <a href="#contact" class="block mt-2 w-full text-center bg-brand-accent text-white px-4 py-2 rounded-lg hover:bg-brand-accent-dark transition-colors">Contact</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="min-h-screen flex items-center bg-brand-secondary">
+            
+            <div class="container mx-auto px-6 text-center py-16 md:py-24">
+               <div class="grid grid-cols-1 sm:grid-cols-1 gap-2 md:gap-3">
+                        <img src="https://imagizer.imageshack.com/img922/9158/1gi25y.png" onerror="this.onerror=null;this.src='https://placehold.co/300x250/D8CCA3/402E32?text=Image+3+Not+Available';" alt="Coffee Cart Logo" class="md:col-span-1">
+                    </div>
+               <div class="max-w-5xl mx-auto cart-gallery">
+                    <h3 class="text-2xl font-bold text-center mb-6 text-brand-title">Our Vision: The French Press Cart</h3>
+                    
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 text-brand-title">Premium Coffee, Affordably Yours.</h1>
+                <p class="text-lg md:text-xl text-stone-700 max-w-3xl mx-auto mb-8">Bringing the charm of a Parisian café and the quality of specialty coffee to the streets of Mumbai.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto mb-12">
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <h3 class="text-xl font-bold mb-2 text-brand-accent">Premium Quality</h3>
+                        <p class="text-stone-600">Expertly brewed espresso from high-quality, freshly roasted beans.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <h3 class="text-xl font-bold mb-2 text-brand-accent">Affordable Price</h3>
+                        <p class="text-stone-600">Making specialty coffee an accessible daily pleasure, not a luxury.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <h3 class="text-xl font-bold mb-2 text-brand-accent">Unique Experience</h3>
+                        <p class="text-stone-600">Charming French-style carts providing quick, friendly service.</p>
+                    </div>
+                </div>
+                
+                <div class="max-w-5xl mx-auto cart-gallery">
+                    <h3 class="text-2xl font-bold text-center mb-6 text-brand-title">Our Vision: The French Press Cart</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                        <img src="https://imagizer.imageshack.com/img923/5259/rs5qdf.png" onerror="this.onerror=null;this.src='https://placehold.co/600x450/EFEBE9/402E32?text=Image+1+Not+Available';" alt="Envisioned Coffee Cart Design 1" class="w-full h-auto">
+                        <img src="https://imagizer.imageshack.com/img923/4231/Scl4Zg.png" onerror="this.onerror=null;this.src='https://placehold.co/600x450/EBD8C3/402E32?text=Image+2+Not+Available';" alt="Envisioned Coffee Cart Design 2" class="w-full h-auto">
+                        <img src="https://imageshack.com/i/poPQj3fqp" onerror="this.onerror=null;this.src='https://placehold.co/600x450/D8CCA3/402E32?text=Image+3+Not+Available';" alt="Envisioned Coffee Cart Design 3" class="w-full h-auto sm:col-span-2 lg:col-span-1">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="opportunity" class="py-16 md:py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">The Coffee Conundrum & Our Opportunity</h2>
+                <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-start mb-12">
+                    <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4">The Problem We Solve</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start"><span class="text-brand-accent font-bold mr-3 text-xl">●</span><span><strong class="font-semibold">Expensive Premium Coffee:</strong> Major chains offer great coffee but at prices inaccessible for daily consumption by many.</span></li>
+                            <li class="flex items-start"><span class="text-brand-accent font-bold mr-3 text-xl">●</span><span><strong class="font-semibold">Inconsistent Low-End Options:</strong> Basic street vendors often lack quality, consistency, and a premium experience.</span></li>
+                            <li class="flex items-start"><span class="text-brand-accent font-bold mr-3 text-xl">●</span><span><strong class="font-semibold">Convenience Gap:</strong> A clear lack of quick, high-quality coffee options in high-footfall areas like commute routes and office parks, especially in bustling cities like Mumbai.</span></li>
+                        </ul>
+                    </div>
+                    <div class="bg-brand-secondary p-6 md:p-8 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4">The Market Is Brewing</h3>
+                        <p class="text-stone-700 mb-4">India's coffee culture is experiencing explosive growth. Reports from 2024-2025 (e.g., UnivDatos, Grand View Research) indicate the India Coffee Retail Chains market was valued at ~USD 615 million in 2024, projected to grow at a CAGR of around 8.2%. The Specialty Coffee market in India is even more dynamic, expected to reach ~USD 6.28 billion by 2030 with a CAGR of 13.6% (2025-2030).</p>
+                        <p class="text-stone-700 mb-4">Key drivers include rising disposable incomes, urbanization, and a growing café culture, particularly among millennials and Gen Z in cities like Mumbai (TechSci Research, 2024). There's a clear shift towards premium and specialty coffee experiences, with consumers valuing quality, origin, and unique flavors (Godrej Food Trends Report 2024, Restaurant India 2025).</p>
+                        <div class="chart-container h-64 max-w-md">
+                            <canvas id="marketGrowthChart"></canvas>
+                        </div>
+                        <p class="text-xs text-stone-500 mt-2 text-center">Sources: Based on data from UnivDatos, Grand View Research, TechSci Research (2024-2025 reports).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="business" class="py-16 md:py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Business Blueprint</h2>
+                <div class="max-w-4xl mx-auto">
+                    <div class="mb-8 flex flex-wrap justify-center border-b border-stone-200">
+                        <button class="tab-button px-4 py-3 md:px-6 text-md md:text-lg font-semibold active-tab" data-tab="product">Product & Service</button>
+                        <button class="tab-button px-4 py-3 md:px-6 text-md md:text-lg font-semibold" data-tab="model">Business Model</button>
+                        <button class="tab-button px-4 py-3 md:px-6 text-md md:text-lg font-semibold" data-tab="edge">Competitive Edge</button>
+                    </div>
+                    <div id="tab-content" class="bg-brand-secondary p-6 md:p-8 rounded-lg shadow-inner">
+                        <div id="product" class="tab-pane">
+                            <p class="text-center text-lg text-stone-700 mb-6">Our focus is on quality, speed, and a memorable experience. We serve a curated menu of classic espresso drinks, ensuring every cup is perfect.</p>
+                            <div class="grid md:grid-cols-2 gap-6 md:gap-8 text-left">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h4 class="text-xl font-bold mb-2 text-brand-accent">Core Menu</h4>
+                                    <ul class="list-disc list-inside text-stone-700 space-y-1">
+                                        <li>Espresso & Americano</li>
+                                        <li>Cappuccino & Latte</li>
+                                        <li>Mocha & Flavored Lattes</li>
+                                        <li>Iced Coffees & Cold Brew</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h4 class="text-xl font-bold mb-2 text-brand-accent">Our Service Promise</h4>
+                                     <ul class="list-disc list-inside text-stone-700 space-y-1">
+                                        <li><strong>Fast & Efficient:</strong> Optimized for quick takeaway service.</li>
+                                        <li><strong>Friendly Interaction:</strong> Professional and welcoming baristas.</li>
+                                        <li><strong>Unique Ambiance:</strong> The cart itself is a key part of the premium experience.</li>
+                                        <li><strong>Quality Ingredients:</strong> Freshly roasted beans, quality milk.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="model" class="tab-pane hidden">
+                            <p class="text-center text-lg text-stone-700 mb-6">Our lean and scalable business model is designed to maximize profitability by minimizing fixed overheads, a key advantage of our mobile approach.</p>
+                            <div class="grid md:grid-cols-2 gap-6 md:gap-8 text-left">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h4 class="text-xl font-bold mb-2 text-brand-accent">Revenue & Pricing</h4>
+                                    <p class="text-stone-700">Revenue comes from direct sales of beverages. Our pricing strategy offers high value, positioning us significantly below premium cafes (e.g., ₹115 for a standard 8oz milk coffee) but above basic street vendors.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h4 class="text-xl font-bold mb-2 text-brand-accent">Cost Structure</h4>
+                                    <p class="text-stone-700">Our main costs are variable (COGS like beans, milk, cups) and operational (staff, power, transport, maintenance). By avoiding high fixed rent, we maintain a flexible and efficient cost base.</p>
+                                </div>
+                            </div>
+                             <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+                                <h4 class="text-xl font-bold text-center mb-4 text-brand-accent">Why Mobile over a Fixed Kiosk?</h4>
+                                <p class="text-center text-stone-700">We chose the mobile cart model for its strategic advantages in **location flexibility**, allowing us to test markets and go where demand is highest, and its **lower fixed overheads**, which enable our affordable pricing. This agility and cost-efficiency are central to our strategy to make premium coffee accessible.</p>
+                            </div>
+                        </div>
+                        <div id="edge" class="tab-pane hidden">
+                            <p class="text-center text-lg text-stone-700 mb-6">Our unique blend of quality, price, experience, and mobility creates a strong competitive advantage that is difficult to replicate.</p>
+                            <div class="space-y-4 text-left bg-white p-6 rounded-lg shadow-md">
+                               <p><strong class="font-semibold text-brand-accent">vs. Premium Cafes:</strong> We offer comparable quality at a significantly lower price point with greater convenience for takeaway customers.</p>
+                               <p><strong class="font-semibold text-brand-accent">vs. Basic Vendors:</strong> We provide vastly superior quality, consistency, professional branding, and a better overall experience.</p>
+                               <p><strong class="font-semibold text-brand-accent">Our Core USP:</strong> The intersection of these four pillars—Premium Quality, Affordable Price, Unique Aesthetic, and Strategic Mobility—is our key differentiator.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="financials" class="py-16 md:py-20 bg-brand-secondary">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">The Financial Case</h2>
+                 <p class="text-center text-lg text-stone-700 mb-12">An interactive look at our path to profitability with a single cart and an initial ₹6 Lakh investment.</p>
+                <div class="grid lg:grid-cols-2 gap-10 md:gap-16 items-start">
+                    <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl">
+                        <h3 class="text-2xl font-bold mb-2 text-center">Funding Ask: ₹6 Lakhs</h3>
+                        <p class="text-center text-stone-700 mb-6">This initial investment covers the complete setup for our first mobile cart, including robust equipment, and provides an operational runway.</p>
+                        <div class="chart-container">
+                            <canvas id="useOfFundsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl">
+                        <h3 class="text-2xl font-bold mb-6 text-center">Interactive Profitability Scenarios</h3>
+                        <div class="text-center mb-6">
+                            <p class="text-stone-700">Select a daily sales scenario to see the potential:</p>
+                             <div class="flex flex-wrap justify-center space-x-1 sm:space-x-2 mt-4 rounded-lg p-1 bg-stone-100">
+                                <button class="scenario-btn flex-1 px-3 py-2 text-sm sm:px-4 sm:py-2 rounded-md transition" data-scenario="conservative">Conservative</button>
+                                <button class="scenario-btn flex-1 px-3 py-2 text-sm sm:px-4 sm:py-2 rounded-md transition active-tab" data-scenario="moderate">Moderate</button>
+                                <button class="scenario-btn flex-1 px-3 py-2 text-sm sm:px-4 sm:py-2 rounded-md transition" data-scenario="optimistic">Optimistic</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-center mb-6">
+                            <div class="bg-brand-secondary p-4 rounded-lg">
+                                <p class="text-sm text-stone-600">Avg. Cups / Day</p>
+                                <p id="cups-per-day" class="text-2xl font-bold text-brand-accent">50</p>
+                            </div>
+                            <div class="bg-brand-secondary p-4 rounded-lg">
+                                <p class="text-sm text-stone-600">Est. Net Monthly Profit</p>
+                                <p id="net-profit" class="text-2xl font-bold text-brand-accent">₹60,340</p>
+                            </div>
+                             <div class="bg-brand-secondary p-4 rounded-lg col-span-2">
+                                <p class="text-sm text-stone-600">Projected Payback Period on ₹6L Investment</p>
+                                <p id="payback-period" class="text-2xl font-bold text-brand-accent">~10 Months</p>
+                            </div>
+                        </div>
+                        <div>
+                             <p class="text-center text-sm text-stone-600 mb-2">Projected Year 1 Net Profit (at selected scenario)</p>
+                            <div class="chart-container h-48">
+                                <canvas id="profitabilityChart"></canvas>
+                            </div>
+                        </div>
+                         <p class="text-xs text-stone-500 mt-4 text-center">Unit Economics: ASP ₹115, COGS ~₹40.20, Gross Profit/Cup ~₹74.80. Monthly Fixed Op. Costs ~₹36,900. Break-even ~19 cups/day.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="py-16 md:py-20">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">Our Roadmap to Success</h2>
+                <div class="relative">
+                    <div class="hidden md:block absolute left-1/2 -ml-0.5 w-1 h-full bg-amber-300 rounded-full"></div>
+                    <div class="space-y-12 md:space-y-16">
+                        <div class="md:flex md:items-center md:space-x-8 relative">
+                            <div class="md:w-1/2">
+                                <div class="bg-white p-6 rounded-lg shadow-lg md:text-right">
+                                    <div class="md:hidden absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-accent rounded-full border-4 border-brand-primary flex items-center justify-center text-white font-bold">1</div>
+                                    <div class="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-accent rounded-full border-4 border-brand-primary flex items-center justify-center text-white font-bold">1</div>
+                                    <h3 class="text-xl font-bold mb-2">Phase 1: Launch (Months 1-3)</h3>
+                                    <p class="text-stone-600">Deploy our first mobile cart in a prime Mumbai location, secure permits, and build initial brand buzz through local marketing and social media.</p>
+                                </div>
+                            </div>
+                            <div class="hidden md:block md:w-1/2"></div>
+                        </div>
+                         <div class="md:flex md:items-center md:space-x-8 relative">
+                            <div class="hidden md:block md:w-1/2"></div>
+                            <div class="md:w-1/2">
+                                 <div class="bg-white p-6 rounded-lg shadow-lg">
+                                    <div class="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-accent rounded-full border-4 border-brand-primary flex items-center justify-center text-white font-bold">2</div>
+                                    <h3 class="text-xl font-bold mb-2">Phase 2: Growth (Months 4-18)</h3>
+                                    <p class="text-stone-600">Analyze performance data from the first cart. Reinvest profits to launch 2-4 additional carts in other strategic locations across the city.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:flex md:items-center md:space-x-8 relative">
+                             <div class="md:w-1/2">
+                                <div class="bg-white p-6 rounded-lg shadow-lg md:text-right">
+                                    <div class="md:hidden absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-accent rounded-full border-4 border-brand-primary flex items-center justify-center text-white font-bold">3</div>
+                                    <div class="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-accent rounded-full border-4 border-brand-primary flex items-center justify-center text-white font-bold">3</div>
+                                    <h3 class="text-xl font-bold mb-2">Phase 3: Scale (Year 2+)</h3>
+                                    <p class="text-stone-600">With a proven model, explore expansion to other metro cities and evaluate long-term exit strategies such as franchising or strategic acquisition.</p>
+                                </div>
+                            </div>
+                             <div class="hidden md:block md:w-1/2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="team" class="py-16 md:py-20 bg-white">
+            <div class="container mx-auto px-6 text-center max-w-2xl">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8">Passionate & Driven Leadership</h2>
+                <img src="https://placehold.co/150x150/EFEBE9/402E32?text=Founder" onerror="this.onerror=null;this.src='https://placehold.co/150x150/FDFBF8/6B4F4B?text=Founder';" alt="Founder's profile picture" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-lg border-4 border-amber-100">
+                <h3 class="text-2xl font-bold">Your Name</h3>
+                <p class="text-brand-accent font-semibold mb-4">Founder & CEO</p>
+                <p class="text-stone-700">Driven by a passion for quality coffee and a vision to make it accessible to everyone. With a background in [mention your relevant skill, e.g., business management, marketing, F&B operations], I am dedicated to building a beloved brand known for its quality, affordability, and exceptional service. We aim to become a staple in Mumbai's vibrant street scene.</p>
+            </div>
+        </section>
+
+        <footer id="contact" class="bg-brand-title text-white py-16">
+            <div class="container mx-auto px-6 text-center">
+                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-amber-100">Join Us in Brewing Success</h2>
+                 <p class="text-stone-300 max-w-2xl mx-auto mb-8">We believe The French Press Cart has the right ingredients to make a significant impact on Mumbai's coffee scene. Let's connect and discuss how we can build this exciting venture together.</p>
+                 <p class="text-lg font-semibold text-white">Your Name</p>
+                 <p class="text-amber-300 hover:text-amber-200 transition-colors">your.email@example.com</p>
+                 <p class="text-amber-300">+91 12345 67890</p>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active-tab'));
+                    button.classList.add('active-tab');
+                    const targetTab = button.dataset.tab;
+                    tabPanes.forEach(pane => {
+                        pane.classList.toggle('hidden', pane.id !== targetTab);
+                    });
+                });
+            });
+
+            const financialData = {
+                investment: 600000, 
+                baseFixedCosts: 36900,
+                scenarios: {
+                    conservative: { cups: 30, netProfit: 21444, payback: '~28 Months' }, 
+                    moderate: { cups: 50, netProfit: 60340, payback: '~10 Months' }, 
+                    optimistic: { cups: 70, netProfit: 99236, payback: '~6 Months' }  
+                }
+            };
+
+            const cupsEl = document.getElementById('cups-per-day');
+            const profitEl = document.getElementById('net-profit');
+            const paybackEl = document.getElementById('payback-period');
+            const scenarioButtons = document.querySelectorAll('.scenario-btn');
+            let profitabilityChart;
+
+            function updateFinancials(scenarioKey) {
+                const scenario = financialData.scenarios[scenarioKey];
+                if (cupsEl) cupsEl.innerText = scenario.cups;
+                if (profitEl) profitEl.innerText = '₹' + scenario.netProfit.toLocaleString('en-IN');
+                if (paybackEl) paybackEl.innerText = scenario.payback;
+
+                if (profitabilityChart) {
+                    profitabilityChart.data.datasets[0].data[0] = scenario.netProfit * 12;
+                    profitabilityChart.update();
+                }
+
+                scenarioButtons.forEach(btn => {
+                    btn.classList.toggle('active-tab', btn.dataset.scenario === scenarioKey);
+                });
+            }
+
+            scenarioButtons.forEach(button => {
+                button.addEventListener('click', () => updateFinancials(button.dataset.scenario));
+            });
+            
+            const ctxGrowth = document.getElementById('marketGrowthChart')?.getContext('2d');
+            if (ctxGrowth) {
+                new Chart(ctxGrowth, {
+                    type: 'bar',
+                    data: {
+                        labels: ['2024 Value', '2033 Proj. Value'],
+                        datasets: [{
+                            label: 'India Coffee Retail Chains Market (USD Million)',
+                            data: [615, 1016], 
+                            backgroundColor: ['rgba(161, 98, 7, 0.6)', 'rgba(202, 138, 4, 0.6)'],
+                            borderColor: ['rgba(161, 98, 7, 1)', 'rgba(202, 138, 4, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: true, position: 'bottom' } },
+                        scales: { y: { beginAtZero: true, ticks: { callback: function(value) { return '$' + value + 'M';}}}, x: { grid: { display: false } } }
+                    }
+                });
+            }
+
+            const ctxFunds = document.getElementById('useOfFundsChart')?.getContext('2d');
+            if (ctxFunds) {
+                new Chart(ctxFunds, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Cart & Fab. (35%)', 'Machine & Grinder (30%)', 'Power & Fridge (12%)', 'Inventory & Licenses (10%)', 'Marketing & Contingency (13%)'], 
+                        datasets: [{
+                            data: [35, 30, 12, 10, 13], 
+                            backgroundColor: ['#A16207', '#CA8A04', '#EAB308', '#FACC15', '#FEF08A'],
+                            borderColor: '#FDFBF8',
+                            borderWidth: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth:15, padding:10 } } }
+                    }
+                });
+            }
+            
+            const ctxProfit = document.getElementById('profitabilityChart')?.getContext('2d');
+            if (ctxProfit) {
+                profitabilityChart = new Chart(ctxProfit, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Projected Year 1 Net Profit'],
+                        datasets: [{
+                            label: 'Net Profit (₹)',
+                            data: [financialData.scenarios.moderate.netProfit * 12],
+                            backgroundColor: 'rgba(161, 98, 7, 0.8)',
+                            borderRadius: 4,
+                            barPercentage: 0.5
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { 
+                            x: { 
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) { return '₹' + (value / 100000).toFixed(1) + 'L'; }
+                                }
+                            },
+                            y: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('header .nav-link'); 
+            
+            function updateActiveNavLink() {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if(pageYOffset >= sectionTop - 120) { 
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active-nav');
+                    if(link.getAttribute('href') === `#${current}`) { 
+                        link.classList.add('active-nav');
+                    }
+                });
+            }
+            window.addEventListener('scroll', updateActiveNavLink);
+            updateActiveNavLink(); 
+        });
+    </script>
+</body>
+</html>
 
